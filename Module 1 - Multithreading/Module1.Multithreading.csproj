@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+
+    <!--
+      Must match a .NET runtime you actually have installed.
+
+      A project built for net8.0 will NOT run on a machine that only has the
+      .NET 10 runtime: the host does not roll forward across major versions
+      by default, so it fails with
+
+          You must install .NET to run this application.
+          Framework: 'Microsoft.NETCore.App', version '8.0.0' - not found
+
+      If your students have older runtimes, either lower this to net8.0 or
+      keep net10.0 and add  <RollForward>LatestMajor</RollForward>  so the
+      app accepts any newer runtime.
+    -->
+    <TargetFramework>net10.0</TargetFramework>
+
+    <RootNamespace>Module1</RootNamespace>
+    <AssemblyName>Module1.Multithreading</AssemblyName>
+
+    <!-- Deliberately off: students should see every using they depend on. -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+</Project>
