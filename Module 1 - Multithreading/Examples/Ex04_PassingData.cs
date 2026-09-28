@@ -13,7 +13,7 @@ namespace Module1
         public void Run()
         {
             // WRONG EXAMPLE
-            
+
             Console.WriteLine("WRONG - every thread captures the same variable i: ");
 
             List<Thread> bad = new List<Thread>();
@@ -23,8 +23,9 @@ namespace Module1
                 bad.Add(t);
                 t.Start();
             }
+
             foreach (Thread t in bad) t.Join();
-            
+
             // RIGHT EXAMPLE
 
             Console.WriteLine("\n");
@@ -33,11 +34,12 @@ namespace Module1
             List<Thread> good = new List<Thread>();
             for (int i = 0; i < Count; i++)
             {
-                int copy = i;   // a NEW variable on every iteration
+                int copy = i; // a NEW variable on every iteration
                 Thread t = new Thread(() => Console.Write($"{copy} "));
                 good.Add(t);
                 t.Start();
             }
+
             foreach (Thread t in good) t.Join();
         }
     }
