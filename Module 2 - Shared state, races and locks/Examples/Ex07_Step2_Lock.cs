@@ -1,44 +1,39 @@
 using System;
-using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Module2
 {
-    // lock marks a section of code that only ONE task may be inside at a time
-
-    // The four rules for lock:
-    //   1. lock on a private, readonly object - never lock(this), never a string
-    //   2. hold it as briefly as possible - it is a queue
-    //   3. never do I/O inside a lock
-    //   4. every access takes the SAME lock
+    // lock - one task at a time.
+    //
+    // lock marks a section of code that only ONE task may be inside at a time.
+    // The others wait at the door, so counter++ (read, add, write) can no longer
+    // be interrupted by another task in the middle.
     class Ex07_Step2_Lock : IExample
     {
         const int TASKS = 8;
-        const int N = 200_000;
-        const int START = 2_000_000;
+        const int N = 1_000_000;
 
-        readonly object _gate = new object();     // rule 1
+        readonly object _gate = new object();     // private, readonly, used only for locking
 
-        int _balance;
-        int _withdrawals;
+        int _counter;
 
         public void Run()
         {
-            Console.WriteLine($"start : {START}");
-            Console.WriteLine($"{TASKS} tasks withdraw 1, {N} times each");
-            Console.WriteLine();
+            int expected = TASKS * N;
+            Console.WriteLine($"expected : {expected}");
 
-            Withdraw(false);
-            Report("without lock");
+            Stopwatch sw = Stopwatch.StartNew();
+            Count();
+            sw.Stop();
 
-            Withdraw(true);
-            Report("with lock   ");
+            Console.WriteLine($"Counter is {_counter}");
+            Console.WriteLine($"Time is {sw.ElapsedMilliseconds} ms");
         }
 
-        void Withdraw(bool useLock)
+        void Count()
         {
-            _balance = START;
-            _withdrawals = 0;
+            _counter = 0;
 
             Task[] tasks = new Task[TASKS];
             for (int i = 0; i < TASKS; i++)
@@ -47,37 +42,15 @@ namespace Module2
                 {
                     for (int k = 0; k < N; k++)
                     {
-                        if (useLock)
+                        lock (_gate)
                         {
-                            lock (_gate)          // one task in here at a time
-                            {
-                                _balance -= 1;         // rule 2: only the two
-                                Thread.SpinWait(1);    // lines that must agree
-                                _withdrawals += 1;
-                            }
-                        }
-                        else
-                        {
-                            _balance -= 1;
-                            Thread.SpinWait(1);    // in real code these two are
-                            _withdrawals += 1;     // never adjacent instructions
+                            _counter++;
                         }
                     }
                 });
             }
 
             Task.WaitAll(tasks);
-        }
-
-        void Report(string label)
-        {
-            int sum = _balance + _withdrawals;
-
-            Console.WriteLine($"{label} : balance {_balance} + withdrawals {_withdrawals} = {sum}");
-            Console.WriteLine(sum == START
-                ? "               the account adds up"
-                : $"               it should be {START}. The account does not add up.");
-            Console.WriteLine();
         }
     }
 }

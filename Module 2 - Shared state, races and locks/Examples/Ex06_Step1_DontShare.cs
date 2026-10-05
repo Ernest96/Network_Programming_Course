@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Module2
@@ -15,6 +16,7 @@ namespace Module2
         {
             int[] counts = new int[TASKS];       // one slot per task
             Task[] tasks = new Task[TASKS];
+            Stopwatch sw = Stopwatch.StartNew();
 
             for (int i = 0; i < TASKS; i++)
             {
@@ -27,6 +29,7 @@ namespace Module2
             }
 
             Task.WaitAll(tasks);                 // the merge point
+            sw.Stop();
 
             int total = 0;
             for (int i = 0; i < TASKS; i++)
@@ -39,6 +42,7 @@ namespace Module2
             Console.WriteLine();
             Console.WriteLine($"expected : {expected}");
             Console.WriteLine($"actual   : {total}");
+            Console.WriteLine($"time     : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine();
             Console.WriteLine("Run it ten times. It is correct ten times.");
             Console.WriteLine("Different tasks, different memory. No race is possible.");

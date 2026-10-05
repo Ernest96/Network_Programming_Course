@@ -16,16 +16,18 @@ namespace Module2
         const int N = 1_000_000;
 
         int _counter;
-        readonly object _gate = new object();
 
         public void Run()
         {
             int expected = TASKS * N;
             Console.WriteLine($"expected : {expected}");
 
+            Stopwatch sw = Stopwatch.StartNew();
             Count();
+            sw.Stop();
 
             Console.WriteLine($"Counter is {_counter}");
+            Console.WriteLine($"Time is {sw.ElapsedMilliseconds} ms");
         }
 
         void Count()

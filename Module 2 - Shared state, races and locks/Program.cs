@@ -1,5 +1,5 @@
 using Module2;
 
-IExample example = new Ex01_ThreadVsThreadPool();
+IExample example = new Ex15b_Starvation_Ok();
 
 example.Run();
