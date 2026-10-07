@@ -4,8 +4,7 @@
 |:--|:------|:-------|
 | ✅ | Concurrent programming, multithreading | `Module 1 - Multithreading` |
 | ✅ | Shared state: races, locks, deadlock | `Module 2 - Shared state, races and locks` |
-| ⬜ | Tasks, `async`/`await`, cancellation | planned |
-| ⬜ | OSI model, TCP and UDP | planned |
+| ✅ | Tasks, `async`/`await`, cancellation | planned |
 | ⬜ | Sockets API programming | planned |
 | ⬜ | DNS | planned |
 | ⬜ | HTTP | planned |

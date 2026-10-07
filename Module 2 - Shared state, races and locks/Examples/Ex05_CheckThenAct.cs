@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Module2
@@ -16,6 +17,7 @@ namespace Module2
 
         int _remaining;
         int _sold;
+        readonly object _gate = new object();
 
         public void Run()
         {
@@ -50,11 +52,15 @@ namespace Module2
         {
             while (true)
             {
-                if (_remaining <= 0)
-                    return;
+                lock (_gate)
+                {
+                    if (_remaining <= 0)
+                        return;
 
-                _remaining--;
-                _sold++;
+                    _remaining--;
+                    _sold++;
+                }
+               
             }
         }
     }

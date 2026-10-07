@@ -14,7 +14,7 @@ namespace Module2
     class Ex03_NeverBlockThePool : IExample
     {
         const int JOBS = 100;
-        const int BLOCK_MS = 200000;
+        const int BLOCK_MS = 20000;
 
         readonly Stopwatch _clock = Stopwatch.StartNew();
 
@@ -24,6 +24,8 @@ namespace Module2
             Console.WriteLine($"{JOBS} tasks, each blocking for {BLOCK_MS} ms");
             Console.WriteLine();
 
+            ThreadPool.SetMinThreads(100, 100);
+            
             Task[] tasks = new Task[JOBS];
             for (int i = 0; i < JOBS; i++)
             {

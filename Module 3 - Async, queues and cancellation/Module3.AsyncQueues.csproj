@@ -23,4 +23,9 @@
     <None Remove="CatDemo/**" />
   </ItemGroup>
 
+  <!-- Ex01b reads data.txt - copy it next to the program. -->
+  <ItemGroup>
+    <None Update="data.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
