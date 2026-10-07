@@ -1,0 +1,28 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module3.AsyncQueues", "Module3.AsyncQueues.csproj", "{20648F0E-A31F-4874-B68A-7EA683735C52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatDemo", "CatDemo\CatDemo.csproj", "{1AEC507D-56ED-478A-B75E-E14CDE8F1623}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20648F0E-A31F-4874-B68A-7EA683735C52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20648F0E-A31F-4874-B68A-7EA683735C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20648F0E-A31F-4874-B68A-7EA683735C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20648F0E-A31F-4874-B68A-7EA683735C52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEC507D-56ED-478A-B75E-E14CDE8F1623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEC507D-56ED-478A-B75E-E14CDE8F1623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEC507D-56ED-478A-B75E-E14CDE8F1623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEC507D-56ED-478A-B75E-E14CDE8F1623}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
