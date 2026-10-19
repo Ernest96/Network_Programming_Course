@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+
+    <!--
+      Must match a .NET runtime you actually have installed.
+      See Module 1 for the long version of this warning.
+    -->
+    <TargetFramework>net10.0</TargetFramework>
+
+    <RootNamespace>Module4</RootNamespace>
+    <AssemblyName>Module4.TcpSockets</AssemblyName>
+
+    <!-- Deliberately off: students should see every using they depend on. -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- The ExNN_Client folders are separate projects (the clients) - keep their files out of this one. -->
+  <ItemGroup>
+    <Compile Remove="Ex*_Client/**" />
+    <None Remove="Ex*_Client/**" />
+  </ItemGroup>
+
+</Project>
