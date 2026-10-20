@@ -5,7 +5,7 @@
 | ✅ | Concurrent programming, multithreading | `Module 1` |
 | ✅ | Shared state: races, locks, deadlock | `Module 2` |
 | ✅ | Tasks, `async`/`await`, cancellation | `Module 3` |
-| ⬜ | Sockets API programming | planned |
+| 🕑 | Sockets API programming | `In progress` |
 | ⬜ | DNS | planned |
 | ⬜ | HTTP | planned |
 | ⬜ | Security: HTTPS, encryption, hashing | planned |
