@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+
+    <!--
+      Must match a .NET runtime you actually have installed.
+      See Module 1 for the long version of this warning.
+    -->
+    <TargetFramework>net10.0</TargetFramework>
+
+    <RootNamespace>Module5</RootNamespace>
+    <AssemblyName>Module5.JsonXml</AssemblyName>
+
+    <!-- Deliberately off: students should see every using they depend on. -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- JSON: the Newtonsoft.Json package from NuGet (dotnet add package Newtonsoft.Json). XML: XmlSerializer is part of .NET. -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <!-- Ex05 and Ex06 read Data/student.json and Data/student.xml: copy them next to the program. -->
+  <ItemGroup>
+    <None Update="Data\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- The ExNN_Client folders are separate projects (the clients) - keep their files out of this one. -->
+  <ItemGroup>
+    <Compile Remove="Ex*_Client/**" />
+    <None Remove="Ex*_Client/**" />
+  </ItemGroup>
+
+</Project>
