@@ -17,7 +17,7 @@ namespace Module4
         public Task RunAsync()
         {
             Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(new IPEndPoint(IPAddress.Loopback, PORT));
+            listener.Bind(new IPEndPoint(IPAddress.Parse("192.168.10.32"), PORT));
             listener.Listen(BACKLOG);
             Console.WriteLine($"server: listening on {listener.LocalEndPoint}, backlog = {BACKLOG}");
             Console.WriteLine("server: no Accept yet - run Ex02_Client, then press Enter here");

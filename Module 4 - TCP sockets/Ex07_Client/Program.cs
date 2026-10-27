@@ -7,7 +7,7 @@ using System.Threading;
 
 // Ex07, the client: 1000 clients. Run the Ex07a_ThousandThreads or the Ex07b_ThousandAsync example first.
 
-const int CLIENTS = 15;
+const int CLIENTS = 1000;
 Stopwatch sw = Stopwatch.StartNew();
 Socket[] sockets = new Socket[CLIENTS];
 byte[] buffer = new byte[16];

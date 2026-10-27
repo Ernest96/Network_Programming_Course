@@ -6,7 +6,7 @@ using System.Text;
 // Ex02, the client - a separate program. Run the Ex02_Server example first.
 
 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-socket.Connect(new IPEndPoint(IPAddress.Loopback, 5050));
+socket.Connect(new IPEndPoint(IPAddress.Parse("10.12.134.118"), 5050));
 
 socket.Send(Encoding.UTF8.GetBytes("hello from client A"));
 byte[] buffer = new byte[1024];

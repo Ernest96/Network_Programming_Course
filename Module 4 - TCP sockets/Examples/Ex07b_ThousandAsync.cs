@@ -24,6 +24,7 @@ namespace Module4
             Task[] handlers = new Task[CLIENTS];
             for (int i = 0; i < CLIENTS; i++)
             {
+                int threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
                 Socket client = await listener.AcceptAsync();
                 handlers[i] = HandleAsync(client);          // not awaited: back to Accept at once
             }
@@ -38,6 +39,7 @@ namespace Module4
 
         static async Task HandleAsync(Socket client)
         {
+            int threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
             await client.SendAsync(Encoding.UTF8.GetBytes("hi"));
             byte[] buffer = new byte[16];
             int count = await client.ReceiveAsync(buffer);  // no thread waits here

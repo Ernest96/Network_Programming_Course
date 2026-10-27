@@ -29,7 +29,7 @@ namespace Module4
                 Thread.Sleep(500);                      // a busy server reads a moment later
 
                 // Part 1
-                byte[] buffer = new byte[64 * 1024];
+                byte[] buffer = new byte[1024];
                 int count = client.Receive(buffer);
                 Console.WriteLine($"server: 1 x Receive {count} bytes: \"{Encoding.UTF8.GetString(buffer, 0, count)}\"");
 
@@ -39,10 +39,12 @@ namespace Module4
                 while (total < BIG)
                 {
                     count = client.Receive(buffer);
+                    Console.WriteLine("RECEIVE INVOKED");
                     if (count == 0)
                         break;
                     sizes.Add(count);
                     total += count;
+
                 }
                 Console.WriteLine($"server: {sizes.Count} x Receive for {total:N0} bytes");
 
