@@ -22,11 +22,9 @@ try
 {
     socket.SendTo(new byte[100_000], server);
 }
-catch (SocketException ex)
+catch (Exception ex)
 {
-    Console.WriteLine($"client: SendTo of 100 000 bytes - {ex.SocketErrorCode}");    // too big for one datagram
+    Console.WriteLine($"client: SendTo of 100 000 bytes - {ex.Message}");    // too big for one datagram
 }
-socket.SendTo(new byte[65_507], server);                                            // the largest one (IPv4)
-Console.WriteLine("client: SendTo of 65 507 bytes - sent");
 
 socket.Close();

@@ -1,5 +1,5 @@
 using Module6;
 
-IExample example = new Ex05_Multicast();
+IExample example = new Ex02_Datagrams();
 
 await example.RunAsync();
