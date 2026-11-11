@@ -22,18 +22,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
-  <!-- StudentsServer is a separate project (our own API) - keep its files out of this one. -->
+  <!-- StudentsServer and RiddleServer are separate projects (our own APIs) - keep their files out of this one. -->
   <ItemGroup>
     <Compile Remove="StudentsServer/**" />
     <None Remove="StudentsServer/**" />
-    <Compile Update="RiddleServer\RiddleServer\Program.cs">
-      <Link>RiddleServer\ConsoleApp1\Program.cs</Link>
-    </Compile>
-    <Compile Remove="RiddleServer\**" />
-    <None Remove="RiddleServer\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="RiddleServer\**" />
+    <Compile Remove="RiddleServer/**" />
+    <None Remove="RiddleServer/**" />
+    <EmbeddedResource Remove="RiddleServer/**" />
   </ItemGroup>
 
 </Project>

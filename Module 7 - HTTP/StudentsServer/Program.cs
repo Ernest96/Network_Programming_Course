@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Text;
 using Newtonsoft.Json;
 using StudentsServer;
 
@@ -12,34 +9,24 @@ using StudentsServer;
 //   PUT    /students/2     replace a student (JSON in the body)
 //   DELETE /students/2     delete a student
 
-List<Student> students = new List<Student>
-{
-    new Student { Id = 1, Name = "Ana", Group = "TI-231", Year = 3 },
-    new Student { Id = 2, Name = "Ion", Group = "TI-232", Year = 2 },
-};
-int nextId = 3;
+HttpServer server = new HttpServer("http://*:5050/");
+StudentsRepository studentsRepo = new StudentsRepository();
 
-string address = "http://*:5050/";
-HttpListener listener = new HttpListener();
-listener.Prefixes.Add(address);
-listener.Start();
-Console.WriteLine($"server: Students API on {address}students");
+server.Start();
 
 while (true)
 {
-    HttpListenerContext context = listener.GetContext(); // waits for the next request
+    HttpListenerContext context = server.ServeRequest();
     HttpListenerRequest request = context.Request;
     HttpListenerResponse response = context.Response;
 
-    StreamReader reader = new StreamReader(request.InputStream, Encoding.UTF8);
-    string body = reader.ReadToEnd(); 
+    string body = server.GetBody(request);
+    string[] parts = server.GetUrlParts(request);
 
-    string[] parts = request.Url.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+    int status;
+    string responseData;
 
-    int status = 404;
-    string json = "{\"error\":\"not found\"}";
-
-    // CORS.
+    // CORS: a page from another origin (Ex03_JavaScript) may read our answers.
     if (request.Headers["Origin"] != null)
         response.AddHeader("Access-Control-Allow-Origin", "*");
 
@@ -49,115 +36,101 @@ while (true)
         response.AddHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
         response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
         status = 204;
-        json = null;
+        responseData = null;
     }
-    else if (parts.Length == 1 && parts[0].Equals("students", StringComparison.OrdinalIgnoreCase))
+    else if (parts.Length == 1 && IsStudentsPath(parts[0])) // /students
     {
+        
         if (request.HttpMethod == "GET")
         {
             status = 200;
-            json = JsonConvert.SerializeObject(students);
+            responseData = ToJson(studentsRepo.GetStudents());
         }
         else if (request.HttpMethod == "POST")
         {
-            Student student = ReadStudent(body);
-            if (student == null)
+            try
             {
-                status = 400;
-                json = "{\"error\":\"send a student as JSON\"}";
-            }
-            else
-            {
-                student.Id = nextId;
-                nextId++;
-                students.Add(student);
+                Student student = studentsRepo.CreateStudent(body);
+
                 response.AddHeader("Location", "/students/" + student.Id);
                 status = 201;
-                json = JsonConvert.SerializeObject(student);
+                responseData = ToJson(student);
+            }
+            catch (ArgumentException e)
+            {
+                status = 400;
+                responseData = ToJson(new Error(e.Message));
             }
         }
         else
         {
             status = 405;
-            json = "{\"error\":\"use GET or POST\"}";
+            responseData = ToJson(new Error("use GET or POST"));
         }
     }
-    else if (parts.Length == 2 && parts[0].Equals("students", StringComparison.OrdinalIgnoreCase) && int.TryParse(parts[1], out int id))
+    else if (parts.Length == 2 && IsStudentsPath(parts[0]) && int.TryParse(parts[1], out int id))
     {
-        Student student = students.Find(s => s.Id == id);
+        // /students/{id}
+        Student student = studentsRepo.GetStudent(id);
+
         if (student == null)
         {
             status = 404;
-            json = "{\"error\":\"no student " + id + "\"}";
+            responseData = ToJson(new Error("no student with id " + id));
         }
         else if (request.HttpMethod == "GET")
         {
             status = 200;
-            json = JsonConvert.SerializeObject(student);
+            responseData = ToJson(student);
         }
         else if (request.HttpMethod == "PUT")
         {
-            Student changed = ReadStudent(body);
-            if (changed == null)
+            try
+            {
+                studentsRepo.UpdateStudent(student, body);
+
+                status = 200;
+                responseData = ToJson(student);
+            }
+            catch (ArgumentException e)
             {
                 status = 400;
-                json = "{\"error\":\"send a student as JSON\"}";
-            }
-            else
-            {
-                student.Name = changed.Name;
-                student.Group = changed.Group;
-                student.Year = changed.Year;
-                status = 200;
-                json = JsonConvert.SerializeObject(student);
+                responseData = ToJson(new Error(e.Message));
             }
         }
         else if (request.HttpMethod == "DELETE")
         {
-            students.Remove(student);
+            studentsRepo.DeleteStudent(student);
+
             status = 204;
-            json = null;
+            responseData = null;
         }
         else
         {
             status = 405;
-            json = "{\"error\":\"use GET, PUT or DELETE\"}";
+            responseData = ToJson(new Error("use GET, PUT or DELETE"));
         }
+    }
+    else
+    {
+        status = 404;
+        responseData = ToJson(new Error("not found"));
     }
 
     if (body.Length > 0)
         Console.WriteLine($"server: {request.HttpMethod} {request.Url.AbsolutePath} {body} -> {status}");
     else
         Console.WriteLine($"server: {request.HttpMethod} {request.Url.AbsolutePath} -> {status}");
-    Send(response, status, json);
+
+    server.Send(response, status, responseData);
 }
 
-// The body as a student, or null when it is not a valid one.
-static Student ReadStudent(string body)
+static bool IsStudentsPath(string part)
 {
-    try
-    {
-        Student student = JsonConvert.DeserializeObject<Student>(body);
-        if (student == null || string.IsNullOrEmpty(student.Name))
-            return null;
-        return student;
-    }
-    catch (JsonException)
-    {
-        return null;
-    }
+    return part.Equals("students", StringComparison.OrdinalIgnoreCase);
 }
 
-// Status code, headers, body: the response.
-static void Send(HttpListenerResponse response, int status, string json)
+static string ToJson(object value)
 {
-    response.StatusCode = status;
-    if (json != null)
-    {
-        byte[] bytes = Encoding.UTF8.GetBytes(json);
-        response.ContentType = "application/json; charset=utf-8";
-        response.ContentLength64 = bytes.Length;
-        response.OutputStream.Write(bytes, 0, bytes.Length);
-    }
-    response.Close();
+    return JsonConvert.SerializeObject(value);
 }

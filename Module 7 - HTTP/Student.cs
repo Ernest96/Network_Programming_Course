@@ -16,6 +16,4 @@ namespace Module7
             Year = year;
         }
     }
-    
-    
 }

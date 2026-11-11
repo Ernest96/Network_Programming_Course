@@ -9,6 +9,3 @@ namespace Module7
         public const string Ours = "http://127.0.0.1:5050/";
     }
 }
-
-
-//ngrok http 8080
