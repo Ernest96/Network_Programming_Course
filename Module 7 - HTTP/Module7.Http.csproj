@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+
+    <!--
+      Must match a .NET runtime you actually have installed.
+      See Module 1 for the long version of this warning.
+    -->
+    <TargetFramework>net10.0</TargetFramework>
+
+    <RootNamespace>Module7</RootNamespace>
+    <AssemblyName>Module7.Http</AssemblyName>
+
+    <!-- Deliberately off: students should see every using they depend on. -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- JSON: the Newtonsoft.Json package from NuGet, as in Module 5 (Ex02 reads the id of the new student). -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <!-- StudentsServer is a separate project (our own API) - keep its files out of this one. -->
+  <ItemGroup>
+    <Compile Remove="StudentsServer/**" />
+    <None Remove="StudentsServer/**" />
+    <Compile Update="RiddleServer\RiddleServer\Program.cs">
+      <Link>RiddleServer\ConsoleApp1\Program.cs</Link>
+    </Compile>
+    <Compile Remove="RiddleServer\**" />
+    <None Remove="RiddleServer\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="RiddleServer\**" />
+  </ItemGroup>
+
+</Project>

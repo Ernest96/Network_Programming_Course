@@ -22,7 +22,7 @@ namespace Module6
             EndPoint client = new IPEndPoint(IPAddress.Any, 0);
             socket.ReceiveFrom(buffer, ref client); // datagram 0: the client has started
             Thread.Sleep(2000); // busy - the client keeps sending
-
+            
             int received = 1;
             int outOfOrder = 0;
             int last = 0;

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Our own small API for Ex03: a separate program, so it can run next to the clients. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <RootNamespace>StudentsServer</RootNamespace>
+    <AssemblyName>StudentsServer</AssemblyName>
+
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- JSON: the Newtonsoft.Json package from NuGet, as in Module 5. -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+</Project>

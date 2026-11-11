@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Students</title>
+  <style>
+    body   { font-family: Arial, sans-serif; margin: 2rem; max-width: 46rem; }
+    table  { border-collapse: collapse; margin: 1rem 0; }
+    th, td { padding: 0.35rem 0.9rem; border-bottom: 1px solid #ddd; text-align: left; }
+    input  { width: 7rem; }
+    #year  { width: 4rem; }
+    button { margin-left: 0.25rem; }
+    #log   { background: #f4f4f4; padding: 0.8rem; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Students</h1>
+  <p>Server: <code id="server"></code></p>
+
+  <table>
+    <thead>
+      <tr><th>Id</th><th>Name</th><th>Group</th><th>Year</th><th></th></tr>
+    </thead>
+    <tbody id="students"></tbody>
+  </table>
+
+  <form id="add">
+    <input id="name" placeholder="Name" required>
+    <input id="group" placeholder="Group" required>
+    <input id="year" type="number" min="1" max="6" value="1" required>
+    <button>Add</button>
+  </form>
+
+  <h2>Requests</h2>
+  <pre id="log"></pre>
+
+  <script>
+    
+    //const server = "https://6af1ea7742c6561ced38ca80.mockapi.io";
+    const server = "http://localhost:5050";              // start StudentsServer first
+
+    document.getElementById("server").textContent = server;
+
+   
+    async function send(method, path, student) {
+      const options = { method: method };
+      if (student !== undefined) {
+        options.headers = { "Content-Type": "application/json" };
+        options.body = JSON.stringify(student);
+      }
+      const log = document.getElementById("log");
+      try {
+        const response = await fetch(server + path, options);
+        const body = await response.text();
+        log.textContent += method + " " + path + " -> " + response.status + " " + body + "\n";
+        return body;
+      } catch (error) {
+        // no answer the page may read: the server is not running, or the browser blocked it (see the Console)
+        log.textContent += method + " " + path + " -> no answer: " + error.message + "\n";
+        throw error;
+      }
+    }
+
+    // mockapi.io calls it id, our server Id: for JavaScript these are two different names
+    function idOf(student) {
+      if (student.id !== undefined)
+        return student.id;
+      return student.Id;
+    }
+
+    // GET: all the students, one row each
+    async function load() {
+      const students = JSON.parse(await send("GET", "/students"));
+      const rows = document.getElementById("students");
+      rows.innerHTML = "";
+      for (const student of students) {
+        const row = rows.insertRow();
+        // textContent, not innerHTML: a name is shown as text, never run as HTML
+        row.insertCell().textContent = idOf(student);
+        row.insertCell().textContent = student.Name;
+        row.insertCell().textContent = student.Group;
+        row.insertCell().textContent = student.Year;
+        const buttons = row.insertCell();
+        buttons.append(button("Year +1", () => nextYear(student)));
+        buttons.append(button("Delete", () => remove(student)));
+      }
+    }
+
+    function button(text, onClick) {
+      const b = document.createElement("button");
+      b.textContent = text;
+      b.addEventListener("click", onClick);
+      return b;
+    }
+
+    // POST: the form, as a new student
+    document.getElementById("add").addEventListener("submit", async (event) => {
+      event.preventDefault();              // the browser would send the form itself; we send JSON instead
+      const student = {
+        Name: document.getElementById("name").value,
+        Group: document.getElementById("group").value,
+        Year: Number(document.getElementById("year").value)
+      };
+      await send("POST", "/students", student);
+      event.target.reset();
+      await load();
+    });
+
+    // PUT: the same student, one year later
+    async function nextYear(student) {
+      const changed = { Name: student.Name, Group: student.Group, Year: student.Year + 1 };
+      await send("PUT", "/students/" + idOf(student), changed);
+      await load();
+    }
+
+    // DELETE: the student is gone
+    async function remove(student) {
+      await send("DELETE", "/students/" + idOf(student));
+      await load();
+    }
+
+    load();
+  </script>
+</body>
+</html>
